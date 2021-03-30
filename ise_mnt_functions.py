@@ -101,7 +101,7 @@ def coa_bounce_by_ip(server,username,password,ip):
 
 ########################
 # CoA Session Terminate
-#   with Port Bounce
+#   with Port Shutdown
 # NOT Compatible with VPN and Wireless endpoints
 #   will only ReAuth for VPN/Wireless endpoints
 # Returns True/False
