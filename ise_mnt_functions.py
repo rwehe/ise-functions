@@ -126,9 +126,8 @@ def coa_shut_by_ip(server,username,password,ip):
 
 
 ########################
-# CoA Session Terminate
-# No Port Bounce or Shutdown
-# Compatible with VPN and Wireless endpoints
+# Delete Sessions from MNT
+# No CoA Terminate, Port Bounce, or Shutdown
 # Returns True/False
 def sess_del_by_ip(server,username,password,ip):
     s = requests.session()
