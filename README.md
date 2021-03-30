@@ -1,4 +1,5 @@
 # ise-functions
-ISE Functions developed for Cisco ISE 2.1, **ERS** API
+*ERS* API Functions developed for Cisco ISE 2.1
 
-No *MNT* API functions built yet
+
+*MNT* API functions require Python 3.6+
