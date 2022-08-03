@@ -23,6 +23,24 @@ def get_all_sess(server,username,password):
     return None
 
 
+
+########################
+# Endpoint Search by MAC Address
+# Returns raw XML session data
+# Returns None on failure
+def get_sess_by_mac(server,username,password,mac):
+    s = requests.session()
+    s.auth = (username,password)
+    url = f'https://{server}/admin/API/mnt/Session/MACAddress/{mac}'
+    try:
+        r = s.get(url,verify=False)
+        if r.status_code == 200:
+            return r.text
+    except:
+        print(f'Error: \n{traceback.format_exc()}')
+    return None
+
+
 ########################
 # Endpoint Search by IP Address
 # Returns raw XML session data
