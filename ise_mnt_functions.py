@@ -133,6 +133,29 @@ def coa_bounce_by_ip(server,username,password,ip):
         print(f'Error: \n{traceback.format_exc()}')
     return False
 
+########################
+# CoA Session Terminate
+#   with Port Bounce
+# NOT Compatible with VPN and Wireless endpoints
+#   will only ReAuth for VPN/Wireless endpoints
+# Returns True/False
+def coa_bounce_by_mac(server,username,password,mac):
+    s = requests.session()
+    s.auth = (username,password)
+    sess = get_sess_by_mac(server,username,password,mac)
+    if not sess:
+        return False
+    data = xmltodict.parse(sess)
+    psn = data['sessionParameters']['acs_server']
+    url = f'https://{server}/admin/API/mnt/CoA/Disconnect/{psn}/{mac}/1'
+    try:
+        r = s.get(url,verify=False)
+        if (r.status_code == 200) and (
+                xmltodict.parse(r.text)['remoteCoA']['results'] == 'true'):
+            return True
+    except:
+        print(f'Error: \n{traceback.format_exc()}')
+    return False
 
 ########################
 # CoA Session Terminate
