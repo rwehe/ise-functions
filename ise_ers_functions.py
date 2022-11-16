@@ -292,7 +292,60 @@ def ISE_DELETE_DEV(server,username,password,devID,outFile):
     return resp
 
 
+############################
+# ISE DELETE Network Devices Function
+# 'inFile' is CSV file containing a list of Network Device Names, one name per line
+# Writes results to file
+def ISE_DELETE_DEVICES(server,username,password,inFile,outFile):
+    ########################
+    # Read in file containing network device names
+    with open(inFile,"r") as f:
+        nds = f.read().splitlines()
+    ########################
+    # Setup output file
+    outFile = open(outFile,"w")
+    ########################
+    # Define Headers
+    #
+    accept_header = ("application/vnd.com.cisco.ise.network.networkdevice.1.1+xml")
+    headers = {'Accept': accept_header}
 
+    ########################
+    for nd in nds:
+        deviceName = nd
+        # Define URLs to perform API POST
+        #
+        url = "https://"+server+":9060/ers/config/networkdevice/name/"+deviceName
+        try:
+            r = None
+            print("Deleting Device from: "+url)
+            r = requests.delete(url, headers=headers, auth=requests.auth.HTTPBasicAuth(username,password), verify=False)
+            status_code = r.status_code
+            resp = r.text
+            if (status_code == 204):
+                # Save To File
+                print(f'{nd} Deleted Successfully\n')
+                #xml = dom.parseString(resp)
+                r.close()
+                outFile.write(f"{nd} Deleted Successfully\n")
+            elif (status_code == 401):
+                r.close()
+                outFile.write("Authentication Failure -->  "+username+"\n"+server+"\n")
+                print("Authentication Failure -->  "+username+"\n"+server+"\n")
+            else:
+                r.close()
+                xml = dom.parseString(resp)
+                print('Error Deleting Device\n')
+                r.raise_for_status()
+                outFile.write(f"Error Deleting Device {nd}...\n"+(xml.toprettyxml())+"\n")
+        except requests.exceptions.HTTPError as err:
+            r.close()
+            xml = dom.parseString(resp)
+            print('Error Deleting Device\n')
+            outFile.write(f"Error Deleting Device {nd}...\n"+(xml.toprettyxml())+"\n")
+        # End
+        finally:
+            if r : r.close()
 
 
 ########################
